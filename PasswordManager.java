@@ -15,7 +15,6 @@ public class PasswordManager {
     private static String smallCaps = "abcdefghijklmnopqrstuvwxyz";
     private static String numeric = "1234567890";
     private static String specialChar = "~!@$%^&*(_+{#}|:_[?]>=<";
-    private static String dic = caps + smallCaps + numeric + specialChar;
 
     private static String generatePassword(int length, boolean useCaps, boolean useSmallCaps, boolean useNumeric,
             boolean useSpecialChar) {
@@ -53,14 +52,9 @@ public class PasswordManager {
         String accountName = JOptionPane.showInputDialog("Enter the account name");
         String accountPassword = JOptionPane.showInputDialog("Enter the account password");
         if (accountName != null && accountPassword != null) {
-            if (isStrongPassword(accountPassword)) {
-                accounts.add(new Account(accountName, accountPassword));
-                saveData();
-                JOptionPane.showMessageDialog(null, "Account added successfully!");
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Password is not strong enough! Please ensure that the password has at least 8 characters, including uppercase letters, lowercase letters, digits, and special characters.");
-            }
+            accounts.add(new Account(accountName, accountPassword));
+            saveData();
+            JOptionPane.showMessageDialog(null, "Account added successfully!");
         } else {
             JOptionPane.showMessageDialog(null, "Account name and password cannot be empty!");
         }
@@ -162,14 +156,8 @@ public class PasswordManager {
                 if (account.getName().equals(accountName)) {
                     String newPassword = JOptionPane.showInputDialog("Enter the new password");
                     if (newPassword != null) {
-                        if (isStrongPassword(newPassword)) {
-                            account.setPassword(newPassword);
-                            saveData();
-                            JOptionPane.showMessageDialog(null, "Password changed successfully!");
-                        } else {
-                            JOptionPane.showMessageDialog(null,
-                                    "Password is not strong enough! Please ensure that the password has at least 8 characters, including uppercase letters, lowercase letters, digits, and special characters.");
-                        }
+                        saveData();
+                        JOptionPane.showMessageDialog(null, "Password changed successfully!");
                     } else {
                         JOptionPane.showMessageDialog(null, "Password cannot be empty!");
                     }
@@ -186,8 +174,11 @@ public class PasswordManager {
         JFrame frame = new JFrame("Password Manager");
         JLabel label = new JLabel("Welcome to Password Manager!");
         label.setBounds(10, 10, 250, 25);
+
         frame.add(label);
-        frame.setResizable(false);
+        frame.setSize(100, 100);
+        // frame.setResizable(false);
+        frame.validate();
 
         JButton generatePasswordButton = new JButton("Generate Password");
         generatePasswordButton.setBounds(10, 40, 200, 25);
@@ -255,8 +246,24 @@ public class PasswordManager {
         });
         frame.add(changePasswordButton);
 
+        JButton isPassStrong = new JButton("pass strength test");
+        isPassStrong.setBounds(10, 220, 200, 25);
+        isPassStrong.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String pass = JOptionPane.showInputDialog("Enter the password");
+                if (isStrongPassword(pass)) {
+                    JOptionPane.showMessageDialog(null,
+                            "Password is pretty strong!!");
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Password is not strong enough! Please ensure that the password has at least 8 characters, including uppercase letters, lowercase letters, digits, and special characters.");
+                }
+            }
+        });
+        frame.add(isPassStrong);
+
         JButton exitAppButton = new JButton("Exit");
-        exitAppButton.setBounds(10, 220, 200, 25);
+        exitAppButton.setBounds(10, 250, 200, 25);
         exitAppButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 exitApp();
