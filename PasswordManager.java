@@ -6,16 +6,20 @@ import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Class for managing passwords
 public class PasswordManager {
 
+    // List to store Account objects
     private static List<Account> accounts = new ArrayList<>();
-    private static final String FILE_NAME = "passwords.bin";
+    private static final String FILE_NAME = "passwords.bin"; // File name for storing account data
 
-    private static String caps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static String smallCaps = "abcdefghijklmnopqrstuvwxyz";
-    private static String numeric = "1234567890";
-    private static String specialChar = "~!@$%^&*(_+{#}|:_[?]>=<";
+    // Strings representing different character types for password generation
+    private static String CAPS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static String SMALL_CAPS = "abcdefghijklmnopqrstuvwxyz";
+    private static String NUMERIC = "1234567890";
+    private static String SPECIAL_CHAR = "~!@$%^&*(_+{#}|:_[?]>=<";
 
+    // Method for generating a password based on specified parameters
     private static String generatePassword(int length, boolean useCaps, boolean useSmallCaps, boolean useNumeric,
             boolean useSpecialChar) {
         if (length < 4) {
@@ -25,13 +29,13 @@ public class PasswordManager {
 
         String characters = "";
         if (useCaps)
-            characters += caps;
+            characters += CAPS;
         if (useSmallCaps)
-            characters += smallCaps;
+            characters += SMALL_CAPS;
         if (useNumeric)
-            characters += numeric;
+            characters += NUMERIC;
         if (useSpecialChar)
-            characters += specialChar;
+            characters += SPECIAL_CHAR;
 
         if (characters.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please select at least one character type.");
@@ -48,18 +52,20 @@ public class PasswordManager {
         return password.toString();
     }
 
+    // Method for storing an account in the list
     private static void storePassword() {
         String accountName = JOptionPane.showInputDialog("Enter the account name");
         String accountPassword = JOptionPane.showInputDialog("Enter the account password");
         if (accountName != null && accountPassword != null) {
-            accounts.add(new Account(accountName, accountPassword));
-            saveData();
+            accounts.add(new Account(accountName, accountPassword)); // Create and add a new Account object
+            saveData(); // Save the updated account data to the file
             JOptionPane.showMessageDialog(null, "Account added successfully!");
         } else {
             JOptionPane.showMessageDialog(null, "Account name and password cannot be empty!");
         }
     }
 
+    // Method to check the strength of a password
     private static boolean isStrongPassword(String password) {
         if (password.length() < 8) {
             return false;
@@ -85,6 +91,7 @@ public class PasswordManager {
         return hasUppercase && hasLowercase && hasDigit && hasSpecialChar;
     }
 
+    // Method for searching an account by name
     private static void searchPassword() {
         String accountName = JOptionPane.showInputDialog("Enter the account name to search");
         if (accountName != null) {
@@ -98,13 +105,14 @@ public class PasswordManager {
         }
     }
 
+    // Method for deleting an account by name
     private static void deletePassword() {
         String accountName = JOptionPane.showInputDialog("Enter the account name to delete");
         if (accountName != null) {
             for (Account account : accounts) {
                 if (account.getName().equals(accountName)) {
-                    accounts.remove(account);
-                    saveData();
+                    accounts.remove(account); // Remove the account from the list
+                    saveData(); // Save the updated account data to the file
                     JOptionPane.showMessageDialog(null, "Password deleted successfully!");
                     return;
                 }
@@ -113,22 +121,25 @@ public class PasswordManager {
         }
     }
 
+    // Method for saving account data to the file
     private static void saveData() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-            oos.writeObject(accounts);
+            oos.writeObject(accounts); // Write the list of accounts to the file
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // Method for loading account data from the file
     private static void loadData() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            accounts = (List<Account>) ois.readObject();
+            accounts = (List<Account>) ois.readObject(); // Read the list of accounts from the file
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    // Method for exiting the application
     private static void exitApp() {
         int option = JOptionPane.showConfirmDialog(null, "Do you want to close the application?");
         if (option == JOptionPane.OK_OPTION) {
@@ -136,6 +147,7 @@ public class PasswordManager {
         }
     }
 
+    // Method for displaying all stored accounts
     private static void showAllAccounts() {
         if (accounts.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No accounts stored yet!");
@@ -149,6 +161,7 @@ public class PasswordManager {
         }
     }
 
+    // Method for changing the password of an account
     private static void changePassword() {
         String accountName = JOptionPane.showInputDialog("Enter the account name to change password");
         if (accountName != null) {
@@ -156,7 +169,9 @@ public class PasswordManager {
                 if (account.getName().equals(accountName)) {
                     String newPassword = JOptionPane.showInputDialog("Enter the new password");
                     if (newPassword != null) {
-                        saveData();
+                        // Change the password of the account
+                        account.setPassword(newPassword);
+                        saveData(); // Save the updated account data to the file
                         JOptionPane.showMessageDialog(null, "Password changed successfully!");
                     } else {
                         JOptionPane.showMessageDialog(null, "Password cannot be empty!");
@@ -168,9 +183,11 @@ public class PasswordManager {
         }
     }
 
+    // Main method to run the Password Manager application
     public static void main(String[] args) {
-        loadData();
+        loadData(); // Load any existing account data from the file
 
+        // Create the main application frame
         JFrame frame = new JFrame("Password Manager");
         JLabel label = new JLabel("Welcome to Password Manager!");
         label.setBounds(10, 10, 250, 25);
@@ -180,6 +197,7 @@ public class PasswordManager {
         // frame.setResizable(false);
         frame.validate();
 
+        // Add buttons for different functionalities
         JButton generatePasswordButton = new JButton("Generate Password");
         generatePasswordButton.setBounds(10, 40, 200, 25);
         generatePasswordButton.addActionListener(new ActionListener() {
@@ -246,7 +264,7 @@ public class PasswordManager {
         });
         frame.add(changePasswordButton);
 
-        JButton isPassStrong = new JButton("pass strength test");
+        JButton isPassStrong = new JButton("Pass Strength Test");
         isPassStrong.setBounds(10, 220, 200, 25);
         isPassStrong.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -277,6 +295,7 @@ public class PasswordManager {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    // Class representing an account with name and password
     private static class Account implements Serializable {
         private String name;
         private String password;
@@ -292,6 +311,10 @@ public class PasswordManager {
 
         public String getPassword() {
             return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 }
