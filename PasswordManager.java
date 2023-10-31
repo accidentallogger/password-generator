@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -143,6 +144,9 @@ public class PasswordManager {
     private static void exitApp() {
         int option = JOptionPane.showConfirmDialog(null, "Do you want to close the application?");
         if (option == JOptionPane.OK_OPTION) {
+            // File file = new File("automate.py");
+            // Desktop des = Desktop.getDesktop();
+            // des.open(file);
             System.exit(0);
         }
     }
